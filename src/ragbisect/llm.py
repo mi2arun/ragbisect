@@ -11,6 +11,7 @@
 from __future__ import annotations
 
 import hashlib
+import http.client
 import json
 import os
 import sqlite3
@@ -151,7 +152,7 @@ class LLM:
                     delay = min(delay * 2, 30)
                     continue
                 raise LLMError(f"HTTP {e.code} from {url}: {text[:500]}") from e
-            except (urllib.error.URLError, TimeoutError) as e:
+            except (urllib.error.URLError, TimeoutError, http.client.RemoteDisconnected, ConnectionResetError) as e:
                 if attempt < 5:
                     time.sleep(delay)
                     delay = min(delay * 2, 30)
